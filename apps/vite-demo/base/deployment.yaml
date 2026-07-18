@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vite-demo
+  labels:
+    app.kubernetes.io/name: vite-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: vite-demo
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: vite-demo
+    spec:
+      containers:
+        - name: website
+          # The overlays replace this placeholder with an immutable Jenkins-built tag.
+          image: ghcr.io/pils10/vite-demo:bootstrap
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 80
+          readinessProbe:
+            # Kubernetes sends traffic only after nginx can answer requests.
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 2
+            periodSeconds: 5
+          livenessProbe:
+            # Kubernetes restarts the container if nginx stops answering.
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          resources:
+            # Requests help the scheduler; limits keep a lab workload bounded.
+            requests:
+              cpu: 20m
+              memory: 32Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi

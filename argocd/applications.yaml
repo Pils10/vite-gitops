@@ -1,0 +1,52 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: vite-demo-dev
+  namespace: argocd
+  finalizers:
+    # Deleting the Argo Application will also delete the resources it owns.
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/pils10/vite-gitops.git
+    targetRevision: main
+    path: apps/vite-demo/overlays/dev
+  destination:
+    # Argo CD is deploying back into the cluster where it is running.
+    server: https://kubernetes.default.svc
+    namespace: vite-dev
+  syncPolicy:
+    automated:
+      # Remove live resources that were removed from Git.
+      prune: true
+      # Revert manual kubectl drift back to the state stored in Git.
+      selfHeal: true
+    syncOptions:
+      # Let Argo CD create the destination namespace on the first sync.
+      - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: vite-demo-production
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/pils10/vite-gitops.git
+    targetRevision: main
+    path: apps/vite-demo/overlays/production
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: vite-production
+  syncPolicy:
+    automated:
+      # Production is still auto-synced. The release tag controls whether Jenkins
+      # is permitted to alter the production overlay.
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
