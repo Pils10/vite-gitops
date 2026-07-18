@@ -13,7 +13,7 @@ labels:
 images:
 - name: ghcr.io/pils10/vite-demo
   newName: ghcr.io/pils10/vite-demo
-  newTag: dev-main-67bb6f9c19c3
+  newTag: dev-main-d2d3185708f3
 
 replicas:
 - count: 1
