@@ -12,7 +12,7 @@ labels:
 images:
 - name: ghcr.io/pils10/vite-demo
   newName: ghcr.io/pils10/vite-demo
-  newTag: v1.0.0
+  newTag: v1.1.0
 
   # Two replicas make the production overlay visibly different from dev.
 replicas:
