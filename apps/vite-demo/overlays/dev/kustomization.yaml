@@ -2,19 +2,19 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - ../../base
+- ../../base
 
 # This label makes the environment visible in kubectl and Argo CD.
 labels:
-  - pairs:
-      app.kubernetes.io/environment: dev
+- pairs:
+    app.kubernetes.io/environment: dev
 
-images:
   # Jenkins changes only newTag after each direct branch push.
-  - name: ghcr.io/pils10/vite-demo
-    newName: ghcr.io/pils10/vite-demo
-    newTag: bootstrap
+images:
+- name: ghcr.io/pils10/vite-demo
+  newName: ghcr.io/pils10/vite-demo
+  newTag: dev-main-2e730d8d3723
 
 replicas:
-  - name: vite-demo
-    count: 1
+- count: 1
+  name: vite-demo
